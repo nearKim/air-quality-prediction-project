@@ -6,6 +6,8 @@ authors = ["nearKim <garfield@toss.im>"]
 
 [tool.poetry.dependencies]
 python = "^3.10"
+pydantic = "^1.9.1"
+apache-airflow = "^2.3.3"
 
 [tool.poetry.dev-dependencies]
 black = "^22.6.0"
