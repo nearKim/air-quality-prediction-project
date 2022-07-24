@@ -1,4 +1,3 @@
-from geoalchemy2 import Geometry
 from sqlalchemy import (
     TIMESTAMP,
     BigInteger,
@@ -11,13 +10,11 @@ from sqlalchemy import (
 )
 from sqlalchemy.ext.declarative import declarative_base
 
+from airflow_project.constant import MysqlGeometry
+
 Base = declarative_base()
 
 metadata = MetaData()
-
-
-class MysqlGeometry(Geometry):
-    as_binary = "ST_AsWKB"
 
 
 class AirQuality(Base):

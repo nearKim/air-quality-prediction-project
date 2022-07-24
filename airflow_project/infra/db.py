@@ -1,7 +1,8 @@
 import typing_extensions
-from airflow.util import get_secret_data
 from sqlalchemy import create_engine
 from sqlalchemy.engine import Engine
+
+from airflow_project.util import get_secret_data
 
 if typing_extensions.TYPE_CHECKING:
     from sqlalchemy.ext.asyncio import AsyncEngine, create_async_engine

@@ -5,6 +5,7 @@ from airflow import DAG
 from airflow.operators.python import PythonOperator
 
 import airflow_project.util as utils
+from airflow_project.constant import KST
 from airflow_project.dtos.air_quality import AirQualityDTO
 from airflow_project.entities.air_quality import AirQualityMeasureCenter
 from airflow_project.infra.db import engine
@@ -42,11 +43,11 @@ default_args = {
 }
 
 with DAG(
-    "insert_data_to_db",
+    "insert_air_quality_data_to_db",
     default_args=default_args,
     description="서울시 대기환경 API의 리스폰스를 DB에 업데이트합니다.",
     schedule_interval="@daily",
-    start_date=datetime(2018, 1, 1, tzinfo=None),
+    start_date=datetime(2018, 1, 1, tzinfo=KST),
     catchup=True,
     max_active_runs=5,
     tags=["air_quality", "DB"],
