@@ -1,15 +1,14 @@
 import json
 import typing
 from datetime import datetime
-from functools import lru_cache
 
 import httpx
 from functional import seq
 
-from airflow.dtos.air_quality import AirQualityDTO, AirQualityIntegratedDTO
-from airflow.entities.air_quality import AirQuality, AirQualityMeasureCenter
-from airflow.repositories.air_quality import AirQualityRepository
-from airflow.util import get_secret_data
+from airflow_project.dtos.air_quality import AirQualityDTO, AirQualityIntegratedDTO
+from airflow_project.entities.air_quality import AirQuality, AirQualityMeasureCenter
+from airflow_project.repositories.air_quality import AirQualityRepository
+from airflow_project.util import get_secret_data
 
 API_KEY = get_secret_data()["open_api_key"]
 API_ROOT = f"http://openAPI.seoul.go.kr:8088/{API_KEY}/json/TimeAverageAirQuality"
@@ -26,43 +25,46 @@ class AirQualityService:
     def __init__(self, repository: AirQualityRepository):
         self.repository = repository
 
-    @lru_cache(maxsize=365)
-    async def get_api_result_count(self, target_date: datetime.date):
+    def get_api_result_count(self, target_date: datetime.date) -> int:
         target_date_str: str = target_date.strftime(self.DATE_FORMAT)
         base_url: str = get_api_url(target_date_str, 1, 1)
 
-        async with httpx.AsyncClient() as client:
-            r = await client.get(base_url)
+        with httpx.Client() as client:
+            r = client.get(base_url)
+        if r.status_code != 200:
+            raise RuntimeError(f"{r.status_code} {r.text}")
 
         raw_data = json.loads(r.text)
         total_count = raw_data["TimeAverageAirQuality"]["list_total_count"]
         return total_count
 
-    async def get_air_quality_dto_list(
+    def get_air_quality_dto_list(
         self, target_date: datetime.date, start_idx: int, end_idx: int
     ):
         target_date_str: str = target_date.strftime(self.DATE_FORMAT)
         url = get_api_url(target_date_str, start_idx, end_idx)
 
-        async with httpx.AsyncClient() as client:
-            r = await client.get(url)
-            if r.status_code != 200:
-                raise RuntimeError(f"{r.status_code} {r.text}")
-            j = r.json()
+        with httpx.Client() as client:
+            r = client.get(url)
+
+        if r.status_code != 200:
+            raise RuntimeError(f"{r.status_code} {r.text}")
+
+        j = r.json()
 
         data_list = j["TimeAverageAirQuality"]["row"]
         return [AirQualityDTO(**d) for d in data_list]
 
-    async def get_air_quality_list(
+    def get_air_quality_list(
         self, target_date: datetime.date
     ) -> typing.List[AirQuality]:
-        orm_list = await self.repository.get_by_measure_date(target_date)
+        orm_list = self.repository.get_by_measure_date(target_date)
         return orm_list
 
-    async def get_air_quality_measure_center_list(
+    def get_air_quality_measure_center_list(
         self,
     ) -> typing.List[AirQualityMeasureCenter]:
-        orm_list = await self.repository.list_measure_center()
+        orm_list = self.repository.list_measure_center()
         return orm_list
 
     def get_integrated_air_quality_list(
