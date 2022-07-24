@@ -1,5 +1,14 @@
 from geoalchemy2 import Geometry
-from sqlalchemy import TIMESTAMP, BigInteger, Column, Float, Integer, MetaData, String
+from sqlalchemy import (
+    TIMESTAMP,
+    BigInteger,
+    Column,
+    Float,
+    ForeignKey,
+    Integer,
+    MetaData,
+    String,
+)
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
@@ -16,7 +25,7 @@ class AirQuality(Base):
 
     id = Column("id", BigInteger, primary_key=True)
     measure_datetime = Column("measure_datetime", TIMESTAMP)
-    location = Column("location", String(255))
+    measure_center_id = Column(BigInteger, ForeignKey("air_quality_measure_center.id"))
     no2 = Column("no2", Float)
     o3 = Column("o3", Float)
     co = Column("co", Float)

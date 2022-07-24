@@ -6,6 +6,7 @@ from airflow.operators.python import PythonOperator
 
 import airflow_project.util as utils
 from airflow_project.dtos.air_quality import AirQualityDTO
+from airflow_project.entities.air_quality import AirQualityMeasureCenter
 from airflow_project.infra.db import engine
 from airflow_project.repositories.air_quality import AirQualityRepository
 from airflow_project.services.air_quality import AirQualityService
@@ -22,24 +23,13 @@ def get_api_result_count(
 def insert_data_to_db(datetime_str: str, service: AirQualityService, **context):
     dtz = utils.convert_utc_to_kst_datetime(datetime_str, "%Y-%m-%d")
     cnt = context["task_instance"].xcom_pull(task_ids="get_api_result_count")
-    dto_list: typing.List[AirQualityDTO] = service.get_air_quality_dto_list(dtz, 1, cnt)
-
-    service.insert_air_quality(dto_list)
-    # _stmt = insert(AirQuality)
-    # stmt = _stmt.on_duplicate_key_update(
-    #     id=_stmt.inserted.id,
-    #     measure_datetime=_stmt.inserted.measure_datetime,
-    #     location=_stmt.inserted.location,
-    #     no2=_stmt.inserted.no2,
-    #     o3=_stmt.inserted.o3,
-    #     co=_stmt.inserted.co,
-    #     so2=_stmt.inserted.so2,
-    #     pm10=_stmt.inserted.pm10,
-    #     pm25=_stmt.inserted.pm25,
-    # )
-    #
-    # with engine.connect() as conn:
-    #     conn.execute(stmt, dict_list)
+    air_quality_dto_list: typing.List[AirQualityDTO] = service.get_air_quality_dto_list(
+        dtz, 1, cnt
+    )
+    air_quality_measure_center_list: typing.List[
+        AirQualityMeasureCenter
+    ] = service.get_air_quality_measure_center_list()
+    service.insert_air_quality(air_quality_dto_list, air_quality_measure_center_list)
 
 
 default_args = {

@@ -3,9 +3,8 @@ import typing
 from datetime import datetime
 
 import httpx
-from functional import seq
 
-from airflow_project.dtos.air_quality import AirQualityDTO, AirQualityIntegratedDTO
+from airflow_project.dtos.air_quality import AirQualityDTO
 from airflow_project.entities.air_quality import AirQuality, AirQualityMeasureCenter
 from airflow_project.repositories.air_quality import AirQualityRepository
 from airflow_project.util import get_secret_data
@@ -67,25 +66,11 @@ class AirQualityService:
         orm_list = self.repository.list_measure_center()
         return orm_list
 
-    def get_integrated_air_quality_list(
-        self, air_quality_orm_list: typing.List[AirQuality], measure_center_orm_list
-    ) -> typing.List[AirQualityIntegratedDTO]:
-        measure_center_dict = {
-            center.location: center for center in measure_center_orm_list
-        }
-        result = (
-            seq(air_quality_orm_list)
-            .map(
-                lambda a: AirQualityIntegratedDTO(
-                    **dict(a),
-                    measure_center_address=measure_center_dict[a.location].address,
-                    measure_center_official_code=measure_center_dict[
-                        a.location
-                    ].official_code,
-                    measure_center_latitude=measure_center_dict[a.location].latitude,
-                    measure_center_longitude=measure_center_dict[a.location].longitude,
-                ),
-            )
-            .to_list()
+    def insert_air_quality(
+        self,
+        air_quality_dto_list: typing.List[AirQualityDTO],
+        air_quality_measure_center_list: typing.List[AirQualityMeasureCenter],
+    ):
+        self.repository.insert_air_quality(
+            air_quality_dto_list, air_quality_measure_center_list
         )
-        return result
