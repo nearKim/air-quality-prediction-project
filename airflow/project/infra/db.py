@@ -1,6 +1,7 @@
-from project.util import get_secret_data
 from sqlalchemy import create_engine
 from sqlalchemy.engine import Engine
+
+from ..util import get_secret_data
 
 
 def get_sync_engine():

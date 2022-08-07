@@ -1,4 +1,3 @@
-from project.constant import MysqlGeometry, QualityEnum
 from sqlalchemy import (
     TIMESTAMP,
     BigInteger,
@@ -10,6 +9,8 @@ from sqlalchemy import (
     String,
 )
 from sqlalchemy.ext.declarative import declarative_base
+
+from ..constant import MysqlGeometry, QualityEnum
 
 Base = declarative_base()
 

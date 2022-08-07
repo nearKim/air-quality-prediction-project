@@ -1,7 +1,7 @@
 import datetime
 import json
 
-from project.constant import KST
+from .constant import KST
 
 
 def get_secret_data() -> dict:
