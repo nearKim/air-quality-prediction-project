@@ -1,11 +1,10 @@
 import typing
 
+from project.dtos.wind_info import WindInfoDTO
+from project.entities.wind_info import WindInfo, WindInfoMeasureCenter
 from sqlalchemy import select
 from sqlalchemy.dialects.mysql import insert
 from sqlalchemy.engine import Engine
-
-from airflow_project.dtos.wind_info import WindInfoDTO
-from airflow_project.entities.wind_info import WindInfo, WindInfoMeasureCenter
 
 
 class WindInfoRepository:

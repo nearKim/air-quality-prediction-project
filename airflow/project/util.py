@@ -1,11 +1,11 @@
 import datetime
 import json
 
-from airflow_project.constant import KST
+from project.constant import KST
 
 
 def get_secret_data() -> dict:
-    with open("secret/airflow.json") as f:
+    with open("project/secret.json") as f:
         data = json.load(f)
     return data
 

@@ -3,11 +3,10 @@ import typing
 from datetime import datetime
 
 import httpx
-
-from airflow_project.dtos.air_quality import AirQualityDTO
-from airflow_project.entities.air_quality import AirQuality, AirQualityMeasureCenter
-from airflow_project.repositories.air_quality import AirQualityRepository
-from airflow_project.util import get_secret_data
+from project.dtos.air_quality import AirQualityDTO
+from project.entities.air_quality import AirQuality, AirQualityMeasureCenter
+from project.repositories.air_quality import AirQualityRepository
+from project.util import get_secret_data
 
 API_KEY = get_secret_data()["open_api_key"]
 API_ROOT = f"http://openAPI.seoul.go.kr:8088/{API_KEY}/json/TimeAverageAirQuality"

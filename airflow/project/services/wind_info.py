@@ -3,12 +3,11 @@ from datetime import datetime
 from json import JSONDecodeError
 
 import httpx
+import project.util as utils
 from functional import seq
-
-import airflow_project.util as utils
-from airflow_project.dtos.wind_info import WindInfoDTO
-from airflow_project.repositories.wind_info import WindInfoRepository
-from airflow_project.util import get_secret_data
+from project.dtos.wind_info import WindInfoDTO
+from project.repositories.wind_info import WindInfoRepository
+from project.util import get_secret_data
 
 DATE_FORMAT = "%Y%m%d"
 

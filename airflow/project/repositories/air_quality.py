@@ -3,11 +3,10 @@ import typing
 from datetime import timedelta
 
 from functional import seq
+from project.dtos.air_quality import AirQualityDTO
+from project.entities.air_quality import AirQuality, AirQualityMeasureCenter
 from sqlalchemy import select
 from sqlalchemy.dialects.mysql import insert
-
-from airflow_project.dtos.air_quality import AirQualityDTO
-from airflow_project.entities.air_quality import AirQuality, AirQualityMeasureCenter
 
 
 class AirQualityRepository:

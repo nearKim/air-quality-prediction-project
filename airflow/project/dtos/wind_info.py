@@ -1,9 +1,8 @@
 import datetime
 from typing import Optional
 
+from project.constant import KST, QualityEnum
 from pydantic import BaseModel, Field, validator
-
-from airflow_project.constant import KST, QualityEnum
 
 
 class WindInfoWithMeasureCenterInfoDTO(BaseModel):

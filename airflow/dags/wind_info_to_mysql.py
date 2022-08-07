@@ -1,17 +1,17 @@
 import typing
 from datetime import datetime, timedelta
 
+from project.constant import KST
+from project.dtos.wind_info import WindInfoDTO
+from project.infra.db import engine
+from project.repositories.wind_info import WindInfoRepository
+from project.services.wind_info import WindInfoService
+from project.util import convert_utc_to_kst_datetime
+
 from airflow import DAG
 from airflow.decorators import task
 from airflow.operators.dummy import DummyOperator
 from airflow.utils.task_group import TaskGroup
-
-import airflow_project.util as utils
-from airflow_project.constant import KST
-from airflow_project.dtos.wind_info import WindInfoDTO
-from airflow_project.infra.db import engine
-from airflow_project.repositories.wind_info import WindInfoRepository
-from airflow_project.services.wind_info import WindInfoService
 
 
 @task()
@@ -23,7 +23,7 @@ def get_measure_center_id_list(service: WindInfoService) -> typing.List[int]:
 def insert_data_to_db(
     center_id_list: typing.List[int], service: WindInfoService, **context
 ) -> None:
-    dtz = utils.convert_utc_to_kst_datetime(context["ds"], "%Y-%m-%d")
+    dtz = convert_utc_to_kst_datetime(context["ds"], "%Y-%m-%d")
     wind_info_dto_list: typing.List[WindInfoDTO] = service.get_wind_info_dto_list(
         center_id_list, dtz
     )
@@ -55,8 +55,8 @@ with DAG(
     start = DummyOperator(task_id="start")
 
     with TaskGroup("update_db") as tg:
-        measure_center_id_list = get_measure_center_id_list()
-        dumb_result = insert_data_to_db(measure_center_id_list)
+        measure_center_id_list = get_measure_center_id_list(service)
+        dumb_result = insert_data_to_db(measure_center_id_list, service)
 
     end = DummyOperator(task_id="end")
 
