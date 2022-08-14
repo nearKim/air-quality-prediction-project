@@ -1,0 +1,7 @@
+pydantic==1.9.1
+pymysql==1.0.2
+pyfunctional==1.4.3
+httpx==0.23.0
+sqlalchemy==1.4.39
+geoalchemy2==0.12.1
+asyncmy==0.2.5
